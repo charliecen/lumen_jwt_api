@@ -20,7 +20,7 @@ class PostsController extends Controller
      */
     public function index()
     {
-        $posts = Post::paginate(env('PAGINATE'));
+        $posts = Post::paginate(env('PAGINATE', 10));
         if ($posts) {
             return resp(Code::PostsListSuccess, Msg::PostsListSuccess, $posts);
         }

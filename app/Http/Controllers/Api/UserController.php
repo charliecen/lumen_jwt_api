@@ -28,7 +28,7 @@ class UserController extends Controller
      * 所有用户
      */
     public function index() {
-        $users = User::paginate(config('PAGINATE'));
+        $users = User::paginate(env('PAGINATE', 10));
         return resp(Code::Success, Msg::Success, $users);
     }
 
@@ -67,7 +67,7 @@ class UserController extends Controller
         return [
             'access_token' => $token,
             'token_type'    => 'bearer',
-            'expires_in'    => auth()->factory()->getTTL() * env('JWT_TTL')
+            'expires_in'    => auth()->factory()->getTTL() * env('JWT_TTL', 60)
         ];
     }
 
