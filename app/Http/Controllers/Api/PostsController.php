@@ -7,9 +7,11 @@ namespace App\Http\Controllers\Api;
 use App\Exceptions\Code;
 use App\Exceptions\Msg;
 use App\Http\Controllers\Controller;
+use App\Jobs\TestQueue;
 use App\Models\Post;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Validator;
+use PHPUnit\Util\Test;
 
 class PostsController extends Controller
 {
@@ -53,12 +55,50 @@ class PostsController extends Controller
         }
 
         $attributes = $request->only('title', 'content');
-        $attributes['user_id'] = auth()->user()->id;
+        $attributes['user_id'] = 1; //auth()->user()->id;
         $post = Post::create($attributes);
         if ($post) {
             return resp(Code::CreatePostsSuccess, Msg::CreatePostsSuccess, $post);
         }
         return resp(Code::CreatePostsFailed, Msg::CreatePostsFailed);
+    }
+
+
+    /**
+     * @param Request $request
+     * @return \Illuminate\Http\JsonResponse
+     * 使用队列分发
+     */
+    public function store_with_mq(Request $request)
+    {
+//        dd(222);
+        $message = [
+            'title.required'    => '请输入标题',
+            'title.string'      => '标题必须为字符串',
+            'title.max'         => '标题最多 :max 字符',
+            'content.required'  => '请输入内容',
+            'content.string'    => '内容必须为字符串'
+        ];
+        $validator = Validator::make($request->input(), [
+            'title'     => 'required|string|max:10',
+            'content'   => 'required|string',
+        ], $message);
+
+        if ($validator->fails()) {
+            foreach($validator->errors()->getMessages() as $error) {
+                return resp(Code::CreateUserFailed, $error[0]);
+            }
+        }
+
+        $attributes = $request->only('title', 'content');
+        $attributes['user_id'] = 1; //auth()->user()->id;
+        // 加入mq队列中
+        $this->dispatch(new TestQueue($attributes));
+//        $post = Post::create($attributes);
+//        if ($post) {
+            return resp(Code::CreatePostsSuccess, Msg::CreatePostsSuccess);
+//        }
+//        return resp(Code::CreatePostsFailed, Msg::CreatePostsFailed);
     }
 
 }

@@ -61,8 +61,6 @@ $app->singleton(
 */
 
 $app->configure('app');
-//$app->configure('code');
-//$app->configure('msg');
 
 /*
 |--------------------------------------------------------------------------
@@ -99,6 +97,8 @@ $app->register(App\Providers\AuthServiceProvider::class);
 // $app->register(App\Providers\EventServiceProvider::class);
 // jwt注册
 $app->register(\Tymon\JWTAuth\Providers\LumenServiceProvider::class);
+// mq注册
+$app->register(VladimirYuldashev\LaravelQueueRabbitMQ\LaravelQueueRabbitMQServiceProvider::class);
 /*
 |--------------------------------------------------------------------------
 | Load The Application Routes

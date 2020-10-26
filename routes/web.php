@@ -17,3 +17,6 @@ $router->get('/', function () use ($router) {
     return $router->app->version();
 });
 
+$router->get('/test', 'ExampleController@test');
+$router->post('/posts', 'Api\\PostsController@store_with_mq');
+$router->post('/post', 'Api\\PostsController@store');

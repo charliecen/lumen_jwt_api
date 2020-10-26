@@ -19,6 +19,7 @@ $router->group([
     'namespace' => 'Api',
     'middleware' => 'auth:api'
 ], function () use ($router) {
-    $router->post('/posts', 'PostsController@store');
+//    $router->post('/posts', 'PostsController@store');
+    $router->post('/posts', 'PostsController@store_with_mq');
     $router->get('/posts', 'PostsController@index');
 });
