@@ -72,37 +72,45 @@ class PostsController extends Controller
      */
     public function store_with_mq(Request $request)
     {
-        $rules = [];
-        $attributes = [];
-        $args = $request->all();
-        foreach($args as $k=>$v) {
-            $rules[$k] = config('rules')[$k];
-            $attributes[$k] = config('attributes')[$k];
-        }
+//        $rules = $attributes = $message = [];
+        $args = ['title', 'content', 'phone'];
+        $data = $request->only($args);
+        $error = $this->checkRequest($args, $data);
+        if (!empty($error)) return resp(Code::Failed, $error);
+//        foreach($args as $k){
+//            $rules[$k] = config('rules')[$k];
+//            if (env('APP_LOCALE') == 'zh')
+//                $attributes[$k] = config('attributes')[$k];
+//        }
+//        dd($rules, $attributes);
 //        $rules = [
 //            'title'     =>  'required|max:10',
 //            'content'   =>  'required',
 //            'phone'     =>  'required|regex:/^1[3-8]\d{9}$/'
 //        ];
+        // $message=[], APP_LOCALE=en, 读取resources/lang/en/validation.php
 //        $message = [
 //            'required'  =>  ':attribute 不能为空',
 //            'max'       =>  ':attribute 不能超过 :max 字符',
 //            'regex'     =>  ':attribute 格式不正确',
 //        ];
-        $message = [];
-//        $attributes = [
-//            'title'     =>  '标题',
-//            'content'   =>  '内容',
-//            'phone'     =>  '联系方式'
-//        ];
-//        dd($rules, $attributes, $message);
+//        $message = [];
+        // $attributes = [] 则表示属性为key===>title, 有值则为value===>标题
+//        $attributes = [];
+//        if (env('APP_LOCALE') == 'zh') {
+//            $attributes = [
+//                'title'     =>  '标题',
+//                'content'   =>  '内容',
+//                'phone'     =>  '联系方式'
+//            ];
+//        }
 
-        $validator = Validator::make($request->all(), $rules, $message, $attributes);
-        if ($validator->fails()) {
-            foreach($validator->errors()->getMessages() as $error) {
-                return resp(Code::CreateUserFailed, $error[0]);
-            }
-        }
+//        $validator = Validator::make($request->all(), $rules, $message, $attributes);
+//        if ($validator->fails()) {
+//            foreach($validator->errors()->getMessages() as $error) {
+//                return resp(Code::CreateUserFailed, $error[0]);
+//            }
+//        }
 
         $attributes = $request->only('title', 'content');
         $attributes['user_id'] = 1; //auth()->user()->id;
