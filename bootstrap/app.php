@@ -99,6 +99,8 @@ $app->register(App\Providers\AuthServiceProvider::class);
 $app->register(\Tymon\JWTAuth\Providers\LumenServiceProvider::class);
 // mq注册
 $app->register(VladimirYuldashev\LaravelQueueRabbitMQ\LaravelQueueRabbitMQServiceProvider::class);
+// request注册
+$app->register(\Pearl\RequestValidate\RequestServiceProvider::class);
 /*
 |--------------------------------------------------------------------------
 | Load The Application Routes
