@@ -72,19 +72,31 @@ class PostsController extends Controller
      */
     public function store_with_mq(Request $request)
     {
-        $rules = [
-            'title'     => 'required|max:10',
-            'content'   => 'required',
-        ];
+        $rules = [];
+        $attributes = [];
+        $args = $request->all();
+        foreach($args as $k=>$v) {
+            $rules[$k] = config('rules')[$k];
+            $attributes[$k] = config('attributes')[$k];
+        }
+//        $rules = [
+//            'title'     =>  'required|max:10',
+//            'content'   =>  'required',
+//            'phone'     =>  'required|regex:/^1[3-8]\d{9}$/'
+//        ];
 //        $message = [
 //            'required'  =>  ':attribute 不能为空',
 //            'max'       =>  ':attribute 不能超过 :max 字符',
+//            'regex'     =>  ':attribute 格式不正确',
 //        ];
         $message = [];
-        $attributes = [
-            'title'     =>  '标题',
-            'content'   =>  '内容'
-        ];
+//        $attributes = [
+//            'title'     =>  '标题',
+//            'content'   =>  '内容',
+//            'phone'     =>  '联系方式'
+//        ];
+//        dd($rules, $attributes, $message);
+
         $validator = Validator::make($request->all(), $rules, $message, $attributes);
         if ($validator->fails()) {
             foreach($validator->errors()->getMessages() as $error) {
