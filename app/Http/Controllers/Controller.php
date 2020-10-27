@@ -3,6 +3,8 @@
 namespace App\Http\Controllers;
 
 use App\Exceptions\Code;
+use Illuminate\Support\Facades\Cache;
+use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Validator;
 use Laravel\Lumen\Routing\Controller as BaseController;
 
@@ -21,7 +23,7 @@ class Controller extends BaseController
         $rules = $attributes = $message = [];
         foreach($args as $k){
             $rules[$k] = config('rules')[$k];
-            if (env('APP_LOCALE') == 'zh')
+            if (Cache::get('lan_'. Auth::id()) == 'zh')
                 $attributes[$k] = config('attributes')[$k];
         }
         $validator = Validator::make($data, $rules, $message, $attributes);

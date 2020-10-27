@@ -8,6 +8,8 @@ use App\Exceptions\Code;
 use App\Exceptions\Msg;
 use App\Models\User;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Cache;
 use Illuminate\Support\Facades\Validator;
 use App\Http\Controllers\Controller;
 
@@ -134,5 +136,22 @@ class UserController extends Controller
      */
     public function refresh(){
         return $this->responseWithToken(auth()->refresh());
+    }
+
+    /**
+     * @param Request $request
+     * @return \Illuminate\Http\JsonResponse
+     * 切换语言
+     */
+    public function changeLocale(Request $request)
+    {
+        if ($request->has('lan')){
+            $lan = $request->get('lan');
+            if (in_array($lan, ['en','zh'])) {
+                Cache::put('lan_' . Auth::id(), $lan);
+            }
+            return resp(Code::Success, Msg::Success);
+        }
+        return resp(Code::Failed, Msg::Failed);
     }
 }

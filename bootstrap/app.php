@@ -82,6 +82,7 @@ $app->configure('attributes');
 // 认证中间件
  $app->routeMiddleware([
      'auth' => App\Http\Middleware\Authenticate::class,
+     'SwitchLan'    =>  \App\Http\Middleware\ChangeLanguage::class,
  ]);
 
 /*
@@ -103,8 +104,6 @@ $app->register(\Tymon\JWTAuth\Providers\LumenServiceProvider::class);
 // mq注册
 $app->register(VladimirYuldashev\LaravelQueueRabbitMQ\LaravelQueueRabbitMQServiceProvider::class);
 // request注册
-$app->register(\Pearl\RequestValidate\RequestServiceProvider::class);
-// validate注册
 $app->register(\Pearl\RequestValidate\RequestServiceProvider::class);
 /*
 |--------------------------------------------------------------------------
